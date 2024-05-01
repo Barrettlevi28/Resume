@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+mainClassName = 'src/Main.java'
+
+compileJava.options.encoding = 'UTF-8'
+
+// Repositories and dependencies for code go here
+repositories {
+    mavenCentral()
+}

@@ -8,7 +8,7 @@ public class Main {
     private static ResultSet rs = null;
 
     public static void main(String[] args) {
-
+        //connect(URL, UserName, Password)
         connect(args[0], args[1], args[2]);
 
         MainMenu mainMenu = new MainMenu(conn);
