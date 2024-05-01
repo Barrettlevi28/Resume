@@ -1,0 +1,52 @@
+Assignment 5: DungeonCrawler
+ScreenCast Link: https://youtu.be/tSs7ycSEaUM
+Design Patterns
+Factory Pattern
+	I used the Factory Pattern for player Character creation. Specifically, the concrete Factory called the CharacterFactory is used to initialize a certain character class version of the Character interface based on input from the user or in the simulation, based on the input of GameLogic.gameStart. The Classes used in this design Pattern were the Interface class named Character, the Concrete class named CharacterFactory, and all the product classes named, Assassin, Cleric, Fighter, and Wizard. 
+Sources: 
+https://refactoring.guru/design-patterns/factory-method
+https://www.baeldung.com/java-factory-pattern
+https://www.geeksforgeeks.org/factory-method-for-designing-pattern/
+Decorator Pattern
+	I used the Decorator Pattern for Player Level up. The classes involved in this Design Pattern is the Character interface, the CharacterDecorator Abstract Class, and the classes that extend CharacterDecorator, Lvl5Character, Lvl10Character, and Lvl15Character. The Design Pattern works by having an abstract instance like CharacterDecorator that wraps the Character class in another class. In this case when the player levels up in the first floor past level 5, the Player Object will  be wrapped by the Lvl5Character and be able to use the Special moves from the Lvl5Character. This process would occur multiple times until the Character is Lvl15. 
+Sources:
+https://www.baeldung.com/java-decorator-pattern
+https://refactoring.guru/design-patterns/decorator
+https://www.geeksforgeeks.org/decorator-design-pattern-in-java-with-example/
+Mediator Pattern
+	The Mediator Pattern in this project is used to notify the GameLogic object of the amount of damage characters will take from attacks. This Design Pattern uses the Mediator interface as well as the BattleMediator which is the concreteMediator. The BattleMediator class takes the incoming damage values from a Character as well as the Character object being effected and returns the amount of Damage that the character will take. This is useful because of the dodgeChance as well as critical hits that must be taken into account. 
+Sources:
+https://www.baeldung.com/java-mediator-pattern
+https://www.geeksforgeeks.org/mediator-design-pattern/
+https://refactoring.guru/design-patterns/mediator
+Requirements
+1.	You must be able to choose a class for your character (or have it assigned randomly), each class has a different subset of skills or magic. A class would constitute something along the lines of ’fighter’, ’mage’, ’thief’, get creative with it!
+a.	This is showcased in my Factory Design Pattern. I have four separate classes to choose from. Good places to see this requirement is in my GameLogic Class in the StartGame method. As well as in the Character interface, CharacterFactory and four Character classes. 
+2.	You should be able to choose a type for your character (or have it assigned randomly), each race should have one passive skill that gets better after leveling up or that gives them advantage over another. rate A type would constitute something like, ’orc’, ’elf’, ’dwarf’, ’human’. Perhaps orcs are stronger naturally, perhaps elves are the most nimble and can dodge better, maybe humans have less HP but gain exp at a faster, get creative with it!
+a.	This is showcased in the GameLogic class in my GameStart method there is a switch branch for allowing the Player to choose a Race. This is further supported by every Character class, Assassin, Fighter, Cleric, Wizard all having changes to character stats in the constructor based on race. 
+3.	You should encounter a randomly generated ’small’ enemy every floor, a ’medium’ enemy every 5 floors, and a ’BOSS’ every 10 floors.
+a.	Within my GameLogic class in the battle method it creates an enemy type based on which floor the Player is currently on. There are also classes for LargeEnemy, MediumEnemy, and SmallEnemy. 
+4.	After each floor (and after each possible random encounter with a shop) you should go back to the top floor if your health is below 15%. Going to the top floor gives you back all of your health and mana
+a.	Going to the top floor restores all of the Players Health, Mana, and Stamina. This is best seen in the GameLogic class in the FirstFloor Method. The player automatically returns to the first floor upon player death, I did not have the player return when they were on 15% health because I wanted the player to be able to make mistakes and be punished. This is showcased in the Battle method of the GameLogic Class. 
+5.	All enemies should get harder for each floor you travel to, for example, an enemy on f loor 2 should be much, much weaker than an enemy on floor 48!
+a.	Enemys will gain one health point per floor that the Player goes up. This mechanic is represented by the Constructor in each enemy Class, LargeEnemy, MediumEnemy, SmallEnemy as well as in the battle Method in the GameLogic class where it passes in the floor variable. 
+6.	Your character should have at minimum:
+a.	– Stats: Attack, Health, Mana/Other Resource such as cooldown, Defense, and speed. Others can be added.
+i.	This requirement can be showcased in the private variables in every player class. Assassin, Fighter, Cleric, Wizard. As well as in the getters and setters in the player classes and character interface.
+b.	– Should have at least 1 skill or magic power they can use
+i.	The player is given one Skill upon leveling up past certain milestones like level 5, 10, 15. This is showcased by my decorator design pattern. In the classes, Lvl5Character, Lvl10Character, Lvl15Character. All of these classes have a special move ability that the character can use.
+c.	– Physical attacks should have a chance to critically strike (double damage)
+i.	This is represented in the BattleMediator class. A random object is created and the attack has a 1 in 20 chance of returning double damage. 
+d.	– All attacks should have a chance to fail/miss– Attacks should deal a min damage of 1
+i.	This is represented in the BattleMediator class. A random object is created and the attack has a chance of missing based on the speed of the character being attacked. Because the attack misses it does zero damage and not 1. 
+7.	You gain experience from winning battles, at certain thresholds you should be able to choose a skill or magic power to upgrade.
+a.	The Character automatically gains a more powerful specialMove as they level up past level 5,10, and 15. This is shown in the levelUp method in the GameLogic class as well as in the specialMove method in the Lvl5Character, Lvl10Character, and Lvl15Character classes. 
+8.	Leveling up should only happen when at the top floor. 
+a.	Within the levelUp method in the GameLogic class the Character will level up if they have enough xp. This method is only called when the player returns to the firstFloor when they die or heal. 
+9.	During combat:
+a.	– Attacks and item usage should happen in a turn based fashion, the participant with the highest speed should go first.
+i.	In the BattleLoop Class within my GamLogic Class, Attacks go in a turn based fashion with the player with the highest speed stat starting first. 
+b.	– When a participant reaches 0 or less HP, they lose the fight, if the loser is you, you lose an amount of money and go back to the top floor and only gain 20
+i.	Within the BattleLoop  Class in the GameLogic class, when a player reaches 0 hp it sets a Boolean to false and returns to the battle method. The Battle method checks the health of the player and if it is less than 0 it returns the player to the first floor and awards 20 XP.
+c.	– During either participants turn, they can either attack or use a consumable item.
+i.	Every turn the player can choose to attack, Special attack or Fortify. This is showcased in the BattleLoop Class in the GameLogic Class.

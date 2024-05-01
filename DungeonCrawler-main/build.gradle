@@ -1,0 +1,95 @@
+plugins {
+    id 'com.github.spotbugs' version '4.5.1'
+    id 'checkstyle'
+    id 'java'
+    id 'application'
+    id 'jacoco'
+}
+
+mainClassName = 'src/main/java/Main.java'
+
+compileJava.options.encoding = 'UTF-8'
+
+// Repositories and dependencies for code go here
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.io7m.xom:xom:1.2.+'
+    implementation 'net.sourceforge.nekohtml:nekohtml:1.9.+'
+    implementation 'junit:junit:4.13.1'
+    testImplementation('junit:junit:4.13')
+}
+
+run {
+    standardInput = System.in
+}
+
+tasks.test {
+    useJUnit()
+}
+
+test {
+    finalizedBy jacocoTestReport // report is always generated after tests run
+    testLogging.showStandardStreams = true
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
+}
+
+jacoco {
+    toolVersion = '0.8.8'
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+///////////////////////////////////////////////////////////////////////
+// Configure Checkstyle
+/////////////////////////////////////////////////////////////////////
+apply plugin: 'checkstyle'
+checkstyle {
+    // Keep checkstyle a little quieter
+   ignoreFailures = true
+    showViolations = false
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        html.enabled = true
+        xml.enabled = false
+    }
+     include '**/*.java'
+     include '**/JunitTest.java'
+}
+
+
+checkstyle {
+    toolVersion = '8.8'
+}
+
+///////////////////////////////////////////////////////////////////////
+// //Configure SpotBugs
+///////////////////////////////////////////////////////////////////////
+// To generate an HTML report instead of XML
+
+spotbugsMain {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+spotbugs {
+    toolVersion = '4.5.1'
+    ignoreFailures = true
+    showProgress = true
+    effort = 'max'
+}
